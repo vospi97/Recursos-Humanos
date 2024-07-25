@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.post("/", response_model=Departamento)
 def create_departamento(departamento: DepartamentoCreate, db: Session = Depends(get_db)):
-    db_departamento = Departamento(**departamento.dict())
+    db_departamento = Departamento(**departamento.model_dump())
     db.add(db_departamento)
     db.commit()
     db.refresh(db_departamento)
@@ -32,7 +32,7 @@ def update_departamento(departamento_id: int, departamento: DepartamentoCreate, 
     db_departamento = db.query(Departamento).filter(Departamento.id_departamento == departamento_id).first()
     if db_departamento is None:
         raise HTTPException(status_code=404, detail="Departamento no encontrado")
-    for key, value in departamento.dict().items():
+    for key, value in departamento.model_dump().items():
         setattr(db_departamento, key, value)
     db.commit()
     db.refresh(db_departamento)

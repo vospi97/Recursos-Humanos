@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.post("/", response_model=Contrato)
 def create_contrato(contrato: ContratoCreate, db: Session = Depends(get_db)):
-    db_contrato = Contrato(**contrato.dict())
+    db_contrato = Contrato(**contrato.model_dump())
     db.add(db_contrato)
     db.commit()
     db.refresh(db_contrato)
@@ -32,7 +32,7 @@ def update_contrato(contrato_id: int, contrato: ContratoCreate, db: Session = De
     db_contrato = db.query(Contrato).filter(Contrato.id_contrato == contrato_id).first()
     if db_contrato is None:
         raise HTTPException(status_code=404, detail="Contrato no encontrado")
-    for key, value in contrato.dict().items():
+    for key, value in contrato.model_dump().items():
         setattr(db_contrato, key, value)
     db.commit()
     db.refresh(db_contrato)

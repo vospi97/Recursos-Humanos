@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.post("/", response_model=Empleado)
 def create_empleado(empleado: EmpleadoCreate, db: Session = Depends(get_db)):
-    db_empleado = Empleado(**empleado.dict())
+    db_empleado = Empleado(**empleado.model_dump())
     db.add(db_empleado)
     db.commit()
     db.refresh(db_empleado)
@@ -32,7 +32,7 @@ def update_empleado(empleado_id: int, empleado: EmpleadoUpdate, db: Session = De
     db_empleado = db.query(Empleado).filter(Empleado.id_empleado == empleado_id).first()
     if db_empleado is None:
         raise HTTPException(status_code=404, detail="Empleado no encontrado")
-    for key, value in empleado.dict().items():
+    for key, value in empleado.model_dump().items():
         setattr(db_empleado, key, value)
     db.commit()
     db.refresh(db_empleado)

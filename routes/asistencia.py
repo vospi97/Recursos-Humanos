@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.post("/", response_model=Asistencia)
 def create_asistencia(asistencia: AsistenciaCreate, db: Session = Depends(get_db)):
-    db_asistencia = RegistroAsistencia(**asistencia.dict())
+    db_asistencia = RegistroAsistencia(**asistencia.model_dump())
     db.add(db_asistencia)
     db.commit()
     db.refresh(db_asistencia)
@@ -32,7 +32,7 @@ def update_asistencia(asistencia_id: int, asistencia: AsistenciaCreate, db: Sess
     db_asistencia = db.query(RegistroAsistencia).filter(RegistroAsistencia.id_asistencia == asistencia_id).first()
     if db_asistencia is None:
         raise HTTPException(status_code=404, detail="Asistencia no encontrada")
-    for key, value in asistencia.dict().items():
+    for key, value in asistencia.model_dump().items():
         setattr(db_asistencia, key, value)
     db.commit()
     db.refresh(db_asistencia)

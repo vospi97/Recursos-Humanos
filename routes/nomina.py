@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.post("/", response_model=Nomina)
 def create_nomina(nomina: NominaCreate, db: Session = Depends(get_db)):
-    db_nomina = RegistroNomina(**nomina.dict())
+    db_nomina = RegistroNomina(**nomina.model_dump())
     db.add(db_nomina)
     db.commit()
     db.refresh(db_nomina)
@@ -32,7 +32,7 @@ def update_nomina(nomina_id: int, nomina: NominaCreate, db: Session = Depends(ge
     db_nomina = db.query(RegistroNomina).filter(RegistroNomina.id_nomina == nomina_id).first()
     if db_nomina is None:
         raise HTTPException(status_code=404, detail="Nómina no encontrada")
-    for key, value in nomina.dict().items():
+    for key, value in nomina.model_dump().items():
         setattr(db_nomina, key, value)
     db.commit()
     db.refresh(db_nomina)
