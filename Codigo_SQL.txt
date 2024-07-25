@@ -1,0 +1,71 @@
+Estructura de la Base de Datos para la Gestión de Recursos Humanos
+A continuación te paso los códigos de cada una de las tablas
+
+CREATE TABLE empleados (
+    id_empleado SERIAL PRIMARY KEY,
+    nombres VARCHAR(100),
+    apellidos VARCHAR(100),
+    cc VARCHAR(50) UNIQUE,
+    fecha_nacimiento DATE,
+    direccion VARCHAR(200),
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    tipo_sangre VARCHAR(10)
+);
+
+CREATE TABLE departamentos (
+    id_departamento SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    id_gerente INTEGER REFERENCES empleados(id_empleado),
+    correo VARCHAR(100),
+    telefono VARCHAR(20)
+);
+
+CREATE TABLE contratos (
+    id_contrato SERIAL PRIMARY KEY,
+    id_empleado INTEGER REFERENCES empleados(id_empleado),
+    id_departamento INTEGER REFERENCES departamentos(id_departamento),
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    tipo_contrato VARCHAR(50),
+    cargo VARCHAR(100),
+    salario_base DECIMAL(10, 2),
+    email_empresarial VARCHAR(100),
+    fecha_desvinculacion DATE,
+    eps VARCHAR(100),
+    arl VARCHAR(100),
+    pensiones VARCHAR(100)
+);
+
+CREATE TABLE registro_nomina (
+    id_nomina SERIAL PRIMARY KEY,
+    id_contrato INTEGER REFERENCES contratos(id_contrato),
+    fecha_pago DATE,
+    salario_base DECIMAL(10, 2),
+    deducciones DECIMAL(10, 2),
+    salario_neto DECIMAL(10, 2),
+    id_periodo INTEGER REFERENCES periodo_facturacion(id_periodo)
+);
+
+CREATE TABLE evaluacion_desempeno (
+    id_evaluacion SERIAL PRIMARY KEY,
+    id_empleado INTEGER REFERENCES empleados(id_empleado),
+    id_periodo INTEGER REFERENCES periodo_facturacion(id_periodo),
+    calificacion DECIMAL(3, 2)
+);
+
+CREATE TABLE registro_asistencia (
+    id_asistencia SERIAL PRIMARY KEY,
+    id_empleado INTEGER REFERENCES empleados(id_empleado),
+    observaciones TEXT
+);
+
+CREATE TABLE periodo_facturacion (
+    id_periodo SERIAL PRIMARY KEY,
+    inicio_periodo DATE,
+    final_periodo DATE
+);
+
+
+
+
